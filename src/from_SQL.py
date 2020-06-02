@@ -7,7 +7,7 @@ import psycopg2 as pg2
 
 def from_SQL():
     """
-    Function connects to PostgreSQL server and retireves monthly and annual data
+    Function connects to PostgreSQL server and retrieves monthly and annual data
 
     Returns
     -------
