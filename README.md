@@ -1,6 +1,6 @@
 # <div align="center">Predicting States Electricity Generated from Renewables</div>
 #### <div align="center">by Alex Diaz-Clark</div>
-Training and evaluating various models used to predict the percentage of electricity generated from renewable resources for each state. 
+A project that includes training and evaluating various models used to predict the percentage of electricity generated from renewable resources for each state. 
 
 ## Background
 
