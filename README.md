@@ -14,3 +14,12 @@ The goals of this project are as follows:
 * Create a webpage to host the interactive data dashboard so users from anywhere can access it.
 
 ## The Data
+
+The dataset used for this project was downloaded from the Energy Information Administration (EIA), a part of the US Department of Energy. The dataet can be downloaded by clicking [here](https://www.eia.gov/electricity/data/state/generation_monthly.xlsx "Download dataset from EIA"), or navigating to the [EIA's Detailed State Data page for electricity](https://www.eia.gov/electricity/data/state/ "EIA webpage") (just incase the download link gets changed).
+
+The dataset contains data for every state's electricity generation aggregated by state, month, energy source, and type of producer. Contained is the amount of electricity generated in Megawatt-hours for every month for the years between 2001 and 2019 (inclusive of both). The total amount of electricy generated (all types of producers) was aggregated by state, month, and energy source after it was downloaded. The electricity generation profile changing in time for a single state is shown below. 
+
+
+
+
+
