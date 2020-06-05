@@ -216,8 +216,8 @@ if __name__ == "__main__":
         series = monthly_df.loc[ind] 
         state = series.STATE
         source = series.SOURCE
-        for i, d in enumerate(series[1:231]):
-            month = str(series[1:231].index[i])[:10]
+        for i, d in enumerate(series[1:229]):
+            month = str(series[1:229].index[i])[:10]
             data = d
             query = """
             INSERT INTO monthly (state, source, month, data) 
