@@ -9,7 +9,7 @@ Most states claim to be making efforts to shift their resources used to produce 
 The goals of this project are as follows:
 * Develop a time-series forcasting model to be used for predicting the percentage of electricity generated from renewable resources for each state based on monthly data from the years 2001-2019.   
 * Use the model to predict the monthly percentage of electricity generated from renewable resources for each state for the year 2020.
-* Analyze the 2020 forecasts to identify which states are poised to make the most or least progress towards independence from non-renewable resources for electricity generation.
+* Analyze the 2020 forecasts to identify which states are poised to increase it's percentage of electricity generated from each renewable resource in 2020.
 
 ## The Data
 
