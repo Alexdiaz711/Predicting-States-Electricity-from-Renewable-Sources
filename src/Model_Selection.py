@@ -1,7 +1,8 @@
-from src.from_SQL import from_SQL
+from from_SQL import from_SQL
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime as dt
 import statsmodels.api as sm
 from statsmodels.tsa.api import ExponentialSmoothing
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -29,13 +30,14 @@ def RMSE(y_true, y_hat):
     '''
     return np.sqrt(np.mean((y_true - y_hat)**2))
 
-def create_source_df(source):
+def create_source_df(sources, source):
     '''
     Function to used in create_source_dict function. Creates individual
     dataframe for an energy source's data.
 
     Inputs
     ------
+    sources : dictionary to collect dataframes.
     source : string with name of energy source.
 
     Outputs
@@ -58,17 +60,10 @@ def create_sources_dict():
     dictionary: Dictionary of DataFrames, each containing data for an individual energy source
     '''
     sources = {}
-    sources['solar'] = create_source_df('solar')
-    sources['wind'] = create_source_df('wind')
-    sources['hydro'] = create_source_df('hydro')
-    sources['bio'] = create_source_df('bio')
-    sources['geo'] = create_source_df('geo')
-    sources['coal'] = create_source_df('coal')
-    sources['nat_gas'] = create_source_df('nat_gas')
-    sources['nuclear'] = create_source_df('nuclear')
-    sources['other'] = create_source_df('other')
-    sources['other_gas'] = create_source_df('other_gas')
-    sources['petro'] = create_source_df('petro')
+    energy_sources = ['solar', 'wind', 'hydro', 'bio', 'geo', 'coal', 'nat_gas',
+                    'nuclear', 'other', 'other_gas', 'petro']
+    for source in energy_sources:
+        sources[source] = create_source_df(sources, source)
     for source in sources.keys():
         year = []
         for ind in sources[source].index:
@@ -145,16 +140,48 @@ for state in monthly.STATE.unique():
         states[state] = monthly[monthly.STATE == state]
 
 
+
 # Using California's data to evaluate model performace
 state = 'CA'
 current = states[state]
 CA_predicts = {}
 RMSE_dict = {}
 RMSE_dict[state] = pd.DataFrame(columns=['solar', 'wind', 'hydro', 'bio', 'geo'],
-                       index=['Baseline', 'Holt-Winters', 'ARIMA', 'LSTM Univariate', 'LSTM Multivariate'],
+                       index=['Baseline', 'Holt-Winters', 'LSTM Univariate', 'LSTM Multivariate'],
                        data=None,
                       )
 renewables = ['solar', 'wind', 'hydro', 'bio', 'geo']
+source_names = {'solar': 'Solar',
+                'wind': 'Wind',
+                'hydro': 'Hydroelectric',
+                'bio': 'Biomass',
+                'geo': 'Geothermal',
+                'renewables': 'All Renewables'}
+
+# Creating Plot of California's Renewable Energy Sources
+fig, ax = plt.subplots(figsize=(12,6))
+for source in renewables:
+    temp = current[current.SOURCE == source]
+    ax.plot(temp.iloc[0, 2:]*100, label=source_names[source])
+ax.grid(alpha=0.35)
+ax.legend()
+ax.set_title('CA Electricity Generated from Renewable Energy Sources', fontsize=14)
+ax.set_xlabel('Time', fontsize=14)
+ax.set_ylabel("% of State's Total Electricity", fontsize=14)
+plt.savefig('images/CA_energy_profile.png')
+
+# Creating Plot of California's Solar to explain train/test split
+fig, ax = plt.subplots(figsize=(10,6))
+temp = current[current.SOURCE == 'solar']
+ax.plot(temp.iloc[0, 2:-12]*100, label='Train Data')
+ax.plot(temp.iloc[0, -12:]*100, label='Test Data')
+ax.axvline(dt.datetime(2018,12,15), alpha=0.5, color='r', ls='--')
+ax.grid(alpha=0.35)
+ax.legend(fontsize=14)
+ax.set_title('CA Electricity Generated from Solar', fontsize=14)
+ax.set_xlabel('Time', fontsize=14)
+ax.set_ylabel("% of State's Total Electricity", fontsize=14)
+plt.savefig('images/CA_solar_train_test.png')
 
 # Baseline: Linear Regression
 CA_predicts['Baseline'] = {}
@@ -173,7 +200,7 @@ for source in renewables:
     CA_predicts['Baseline'][source]['Predict'] = y_hat
     CA_predicts['Baseline'][source] = CA_predicts['Baseline'][source][['Data', 'Predict']]
     RMSE_dict[state].loc['Baseline', source] = round(RMSE(CA_predicts['Baseline'][source].Data,
-                                                          CA_predicts['Baseline'][source].Predict), 6)
+                                                          CA_predicts['Baseline'][source].Predict), 4)
 
 # Holt-Winters Triple Exponential Smoothing
 CA_predicts['Holt-Winters'] = {}
@@ -187,26 +214,11 @@ for source in renewables:
     CA_predicts['Holt-Winters'][source]['Predict'] = y_hat
     CA_predicts['Holt-Winters'][source] = CA_predicts['Holt-Winters'][source][['Data', 'Predict']]
     RMSE_dict[state].loc['Holt-Winters', source] = round(RMSE(CA_predicts['Holt-Winters'][source].Data,
-                                                              CA_predicts['Holt-Winters'][source].Predict), 6)
+                                                              CA_predicts['Holt-Winters'][source].Predict), 4)
 
-# Arima
-CA_predicts['ARIMA'] = {}
-sources = create_sources_dict()
-for source in renewables:
-    train = sources[source].iloc[:-12, :].Data
-    model = SARIMAX(train, order=(1, 0, 1), seasonal_order=(1, 0, 1, 12), 
-                    enforce_stationarity=False,enforce_invertibility=False).fit()
-    results = model.get_prediction('2019-01-01', '2019-12-01', 
-               dynamic=True)
-    y_hat = results.predicted_mean
-    CA_predicts['ARIMA'][source] = sources[source].iloc[-12:, :]
-    CA_predicts['ARIMA'][source]['Predict'] = y_hat
-    CA_predicts['ARIMA'][source] = CA_predicts['ARIMA'][source][['Data', 'Predict']]
-    RMSE_dict[state].loc['ARIMA', source] = round(RMSE(CA_predicts['ARIMA'][source].Data,
-                                                       CA_predicts['ARIMA'][source].Predict), 6)
 
 # LSTM Univariate
-CA_predicts['LSTM-Uni'] = {}
+CA_predicts['LSTM Univariate'] = {}
 sources = create_sources_dict()
 n_previous = 24
 n_future = 12
@@ -220,14 +232,14 @@ for source in renewables:
     x_train, y_train = windowize_data(train, n_previous, n_future)
     model.fit(x_train, y_train, batch_size=32, epochs=100)
     y_hat = model.predict(x_test)
-    CA_predicts['LSTM-Uni'][source] = sources[source].iloc[-n_future:, :]
-    CA_predicts['LSTM-Uni'][source]['Predict'] = y_hat[0]
-    CA_predicts['LSTM-Uni'][source] = CA_predicts['LSTM-Uni'][source][['Data', 'Predict']]
-    RMSE_dict[state].loc['LSTM Univariate', source] = round(RMSE(CA_predicts['LSTM-Uni'][source].Data,
-                                                                 CA_predicts['LSTM-Uni'][source].Predict), 6)
+    CA_predicts['LSTM Univariate'][source] = sources[source].iloc[-n_future:, :]
+    CA_predicts['LSTM Univariate'][source]['Predict'] = y_hat[0]
+    CA_predicts['LSTM Univariate'][source] = CA_predicts['LSTM Univariate'][source][['Data', 'Predict']]
+    RMSE_dict[state].loc['LSTM Univariate', source] = round(RMSE(CA_predicts['LSTM Univariate'][source].Data,
+                                                                 CA_predicts['LSTM Univariate'][source].Predict), 4)
 
 # LSTM Multivariate
-CA_predicts['LSTM-Multi'] = {}
+CA_predicts['LSTM Multivariate'] = {}
 sources = create_sources_dict()
 n_previous = 24
 n_future = 12
@@ -262,14 +274,14 @@ for source in renewables:
     model = build_model_multi()
     model.fit(x_train_combined, y_train[source], batch_size=32, epochs=100)
     y_hat = model.predict(x_test_combined)
-    CA_predicts['LSTM-Multi'][source] = sources[source].iloc[-n_future:, :]
-    CA_predicts['LSTM-Multi'][source]['Predict'] = y_hat[0]
-    CA_predicts['LSTM-Multi'][source] = CA_predicts['LSTM-Multi'][source][['Data', 'Predict']]
-    RMSE_dict[state].loc['LSTM Multivariate', source] = round(RMSE(CA_predicts['LSTM-Multi'][source].Data,
-                                                                   CA_predicts['LSTM-Multi'][source].Predict), 6)
+    CA_predicts['LSTM Multivariate'][source] = sources[source].iloc[-n_future:, :]
+    CA_predicts['LSTM Multivariate'][source]['Predict'] = y_hat[0]
+    CA_predicts['LSTM Multivariate'][source] = CA_predicts['LSTM Multivariate'][source][['Data', 'Predict']]
+    RMSE_dict[state].loc['LSTM Multivariate', source] = round(RMSE(CA_predicts['LSTM Multivariate'][source].Data,
+                                                                   CA_predicts['LSTM Multivariate'][source].Predict), 4)
 
 
-# Creating Plots of Holt-Winters predictions compared to the baseline
+# Creating Plots of model predictions compared to the baseline
 # for illustrative purposes
 title_dict = {'solar': 'CA Electricity Generated from Solar Energy',
               'wind': 'CA Electricity Generated from Wind Energy',
@@ -278,9 +290,9 @@ title_dict = {'solar': 'CA Electricity Generated from Solar Energy',
               'geo': 'CA Electricity Generated from Geothermal Energy'}
 for source in renewables:
     fig, ax = plt.subplots(figsize=(7,5))
-    ax.plot(sources[source].iloc[-60:,:].Data, label='Actual data')
-    for model in ['Baseline', 'Holt-Winters']:
-        ax.plot(CA_predicts[model][source].Predict, label=model, ls='--')
+    ax.plot(sources[source].iloc[-12:,:].Data*100, label='Actual data')
+    for model in ['Baseline', 'Holt-Winters', 'LSTM Univariate', 'LSTM Multivariate']:
+        ax.plot(CA_predicts[model][source].Predict*100, label=model, ls='--')
     ax.grid(alpha=0.5)
     ax.legend()
     ax.set_title(title_dict[source], fontsize=14)
