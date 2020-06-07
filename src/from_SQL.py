@@ -1,3 +1,5 @@
+# This script defines functions to retrieve data from SQL database at will.
+
 import pandas as pd
 import numpy as np
 import datetime as dt
