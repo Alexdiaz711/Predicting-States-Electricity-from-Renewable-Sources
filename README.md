@@ -85,6 +85,8 @@ While LSTM neural networks are very powerful tools, it seems that there simply a
 
 Using RMSE on the 2019 predictions in combination with visually inspecting predictions, the Holt-Winters method of triple exponential smoothing is the model selected to move forward with the 2020 predictions.
 
+The script which executes the model evaluation can be found at '/src/Model_Selection.py' in this repository.
+
 ## Analyzing 2020 Predictions
 
 The goal of this project once 2020 forecasts were made, is to identify which states are poised to increase it's percentage of electricity generated from each renewable resource in 2020. The method used for this analysis is described below:
@@ -97,6 +99,8 @@ To demonstrate the process, below is the forecasted 2020 time-series for Califor
 <p align="center">
 <img src="images/CA_solar_predict.png" width=600 height=350>
 </p>
+
+The script which generates the 2020 predictions can be found at '/src/predictions.py' in this repository, and the script which generates the plots and information used for analysis can be found at '/src/analysis.py'
 
 ## Results
 
