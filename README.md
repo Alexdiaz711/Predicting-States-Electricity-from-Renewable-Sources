@@ -71,7 +71,7 @@ The root-mean-squared error (RMSE) on the predicted test data was used as the ma
 | LSTM Univariate | 0.0274 | 0.0161 | 0.0716 | 0.0034 | 0.0070 | **0.82** |
 | LSTM Multivariate | 0.0291 | 0.0190 | 0.0982 | 0.0044 | 0.0088 | **1.05** |
 
-When examining the RMSE for predictions on electricity generated form Wind Energy, the table leads you to believe that the baseline model was the best predictor, because it has the lowest RMSE score. However, visual inspection of the actual predictions, shown below, paints a different picture. 
+When examining the RMSE for predictions on electricity generated from Wind Energy, the table leads you to believe that the baseline model was the best predictor, because it has the lowest RMSE score. However, visual inspection of the actual predictions, shown below, paints a different picture. 
 
 <p align="center">
 <img src="images/CA_wind.png" >
