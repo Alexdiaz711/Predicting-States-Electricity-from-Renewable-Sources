@@ -61,7 +61,7 @@ The final model used is the multivariate neural network. The model structure is 
 
 ## Evaluation Metric
 
-The root-mean-squared error (RMSE) on the predicted test data was used as the main evaluation metric to choose between the models. This was combined with a visual inspection of the predictions. The reason for this necessity is highlighted by the following example. Below is a table containing the RMSE for predicting California's 2019 Energy Time series for the different renewable energy sources (the final column is the average of each column's values when normalized to the Baseline prediction's RMSE).
+The root-mean-squared error (RMSE) on the predicted test data was used as the main evaluation metric to choose between the models. This was combined with a visual inspection of the predictions. The reason for this necessity is highlighted by the following example. Below is a table containing the RMSE for predicting California's 2019 Energy time-series for the different renewable energy sources (the final column is the average of each column's values when normalized to the Baseline prediction's RMSE).
 
 
 | Model | Solar RMSE | Wind RMSE | Hydroelectric RMSE | Biomass RMSE | Geothermal RMSE | **Normalized Avg** |
