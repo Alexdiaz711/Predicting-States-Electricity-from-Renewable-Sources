@@ -41,6 +41,17 @@ if __name__ == "__main__":
     for ind in zeros_keys:
         predictions[ind] = pd.Series(data = np.full((12,), 0.0), index=dates)
 
+    # Setting predictions of all renewables to be sum of predictions 
+    # from the energy sources
+    states = list(renewables_df.STATE.unique())
+    states.remove('US')
+    for state in states:
+        predictions[state + '_renewables'] = (predictions[state + '_solar'] +
+                                            predictions[state + '_wind'] +
+                                            predictions[state + '_hydro'] +
+                                            predictions[state + '_bio'] +
+                                            predictions[state + '_geo'])
+
     # Connecting to PostgreSQL database to store predictions
     print('Storing predictions in SQL database...')
     conn = pg2.connect(dbname='postgres', user='postgres', host='localhost', port='5432', password='password')

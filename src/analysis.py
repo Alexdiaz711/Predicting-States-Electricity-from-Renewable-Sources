@@ -11,6 +11,7 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     # Importing the data from the PostgreSQL database and storing in a pandas DF.
+    print('Importing data...')
     monthly_df, annual_df = from_SQL()
     predict_df = from_SQL_predict()
     renewables = ['solar', 'wind', 'hydro', 'bio', 'geo', 'renewables']
@@ -22,6 +23,7 @@ if __name__ == "__main__":
 
 
     # Fitting linear trends to each prediciton
+    print('Fitting linear trends to predicitons...')
     fit_slopes = []
     fit_intercepts = []
     for i in range(joined.shape[0]):
@@ -38,6 +40,7 @@ if __name__ == "__main__":
 
 
     # Printing top 3 states in terms of highest linear fit slope for each renewable resource
+    print('Making tables and plots...')
     results_df['Change for 2020'] = results_df.SLOPE * 12
     for source in renewables:
         temp = results_df[results_df.SOURCE == source]
@@ -63,7 +66,7 @@ if __name__ == "__main__":
     b = temp3.INTERCEPT.iloc[0]
     dates = joined.columns[-13:]
     ax.plot(temp1*100, label='Historical Data', alpha=0.65)
-    ax.plot(temp2*100, label='Prediction', alpha=0.65, color='g', marker='o')
+    ax.plot(temp2*100, label='Prediction', alpha=0.65, color='g')
     x = np.arange(0,13)
     y = m*x + b
     ax.plot(dates, y*100, label='Prediction Linear Fit', color='r')
