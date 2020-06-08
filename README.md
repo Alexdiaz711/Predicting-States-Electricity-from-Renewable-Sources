@@ -23,7 +23,7 @@ The dataset contains data for every state's electricity generation aggregated by
 
 After tranforming the data to a percentage of the state's total electricity generated, an SQL database was created in a PostgreSQL server running in a Docker container. The SQL database was populated with the data awaiting future retrieval.
 
-The script which executes all of the data processing, creates the SQL databse, and populates the SQL databse can be found at '/src/Jdatabase.py' in this repository.
+The script which executes all of the data processing, creates the SQL databse, and populates the SQL database can be found at '/src/database.py' in this repository.
 
 ## 
 
