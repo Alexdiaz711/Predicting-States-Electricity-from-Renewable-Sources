@@ -59,7 +59,31 @@ The next model used is the univariate LSTM neural network, using only the 2001-2
 
 The final model used is the multivariate neural network. The model structure is the same as the Univariate version, except the input tensor contains the time-series for all 11 energy sources (both renewable and non-renewable) instead of only the time-series for the renewable energy source in question. This is an attempt to capture information that may exist in the relationships between the time-series for the different energy sources. 
 
+## Evaluation Metric
 
+The root-mean-squared error (RMSE) on the predicted test data was used as the main evaluation metric to choose between the models. This was combined with a visual inspection of the predictions. The reason for this necessity is highlighted by the following example. Below is a table containing the RMSE for predicting California's 2019 Energy Time series for the different renewable energy sources (the final column is the average of each column's values when normalized to the Baseline prediction's RMSE).
+
+
+| Model | Solar RMSE | Wind RMSE | Hydroelectric RMSE | Biomass RMSE | Geothermal RMSE | **Normalized Avg** |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: |
+| Baseline | 0.0554 | 0.0124 | 0.0975 | 0.0045 | 0.0073 | **1.0** |
+| Holt-Winters | 0.0216 | 0.0129 | 0.0991 | 0.0016 | 0.0085 | **0.79** |
+| LSTM Univariate | 0.0274 | 0.0161 | 0.0716 | 0.0034 | 0.0070 | **0.82** |
+| LSTM Multivariate | 0.0291 | 0.0190 | 0.0982 | 0.0044 | 0.0088 | **1.05** |
+
+When examining the RMSE for predictions on electricity generated form Wind Energy, the table leads you to believe that the baseline model was the best predictor, because it has the lowest RMSE score. However, visual inspection of the actual predictions, shown below, paints a different picture. 
+
+<p align="center">
+<img src="images/CA_wind.png" >
+</p>
+
+The baseline model has the lowest RMSE score for wind energy, however, it obviously predicts none of the seasonal trend present in the 2019 data. All three of the other models capture some of the seasonal trend, with the Holt-Winters method appearing to do the best job. What is happening is that the RMSE score punishes large errors that occur when the prediction is one or two periods late in predicting the sharp rises and falls of the actual data. This is the reason, that a visual inspection of the predictions was required to confirm the RMSE scores. 
+
+While LSTM neural networks are very powerful tools, it seems that there simply aren't enough data points to truly harness that power. With the method used for this application of windowizing the training data, the LSTM networks are only being trained on 157 samples before attempting to predict the 2019 time-series. 
+
+Using RMSE on the 2019 predictions in combination with visually inspecting predictions, the Holt-Winters method of triple exponential smoothing is the model selected to move forward with the 2020 predictions.
+
+## Analyzing 2020 Predictions
 
 
 
