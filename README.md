@@ -131,9 +131,9 @@ The tables below identifies the top 3 states with respect to increasing it's per
 My takeaways from this project are as follows:
 * Many states have drastically increased their share of electricity generation from renewable resources over the period from 2001-2019.
 * While LSTM neural networks are powerful tools  for forecasting time-series data, they require more than approximately 150 training samples to outperform classic methods such as Holt-Winters.
-* Only 6 states' forecasted 2020 time-series for electricity generated from all renewable energy sources have a positive slope. It's possible that 2020 will bring a downturn in overall electricity generated from renewable sources.
-* Only 2 states' forecasted 2020 time-series for electricity generated from geothermal energy sources have a positive slope, and 46 states do not produce electricity using geothermal energy, making it the energy source most likely to see a decrease in 2020. 
-* 27 states' forecasted 2020 time-series for electricity generated from biomass energy sources have a positive slope, making it the energy source most likely to see an increase in 2020. 
+* Only 6 states' forecasted 2020 time-series for electricity generated from all renewable energy sources have a positive-sloping linear fit. It's possible that 2020 will bring a downturn in overall electricity generated from renewable sources.
+* Only 2 states' forecasted 2020 time-series for electricity generated from geothermal energy sources have a positive-sloping linear fit, and 46 states do not produce electricity using geothermal energy, making it the energy source most likely to see a decrease in 2020. 
+* 27 states' forecasted 2020 time-series for electricity generated from biomass energy sources have a positive-sloping linear fit, making it the energy source most likely to see an increase in 2020. 
 
 ## Next Steps
 
