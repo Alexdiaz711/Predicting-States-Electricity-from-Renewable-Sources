@@ -17,6 +17,16 @@ The dataset used for this project was downloaded from the Energy Information Adm
 
 The dataset contains data for every state's electricity generation aggregated by state, month, energy source, and type of producer. Contained is the amount of electricity generated in Megawatt-hours for every month for the years between 2001 and 2019 (inclusive of both). The total amount of electricy generated (all types of producers) was aggregated by state, month, and energy source after it was downloaded. Next, the data from each energy source, for each state was tranformed to be a percentage of that states total electricity generation. As an example, the time series for the percentage of total electricity generation that is from renewable resources for California is shown below. 
 
+<p align="center">
+<img src="images/CA_energy_profile.png">
+</p>
+
+After tranforming the data to a percentage of the state's total electricity generated, an SQL database was created in a PostgreSQL server running in a Docker container. The SQL database was populated with the data awaiting future retrieval.
+
+The script which executes all of the data processing, creates the SQL databse, and populates the SQL databse can be found at '/src/Jdatabase.py' in this repository.
+
+## 
+
 
 
 
