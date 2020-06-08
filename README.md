@@ -108,7 +108,7 @@ The tables below identifies the top 3 states with respect to increasing it's per
 
 | State | Solar Fit Slope  |
 | --- | :---: |
-| Massachsetts | +2.2 %-points/year |
+| Massachusetts | +2.2 %-points/year |
 | California | +2.0 %-points/year |
 | Nevada | +1.2 %-points/year |
 
@@ -142,3 +142,20 @@ The tables below identifies the top 3 states with respect to increasing it's per
 | Massachusetts | +1.2 %-points/year |
 | New Jersey | +0.38 %-points/year |
 
+## Conclusions
+
+My takeaways from this project are as follows:
+* Many states have drastically increased their share of electricity generation from renewable resources over the period from 2001-2019.
+* While LSTM neural networks are powerful tools  for forecasting time-series data, they require more than approximately 150 training samples to outperform classic methods such as Holt-Winters.
+* According to these predictions, only 6 states' forecasted 2020 time-series for electricity generated from all renewable energy sources have a positive slope. It's possible that 2020 will bring a downturn in overall electricity generated from renewable sources.
+
+## Next Steps
+
+There are a few ideas I would like to explore to improve this project:
+* Find possibly-related exogenous features to be used in making predictions.
+* Continue tuning the Neural Network and try to develop a better predicting model. 
+* Create interactive data dashboard where users can explore historical trends and predictions.
+
+## Acknowledgments
+
+I would like to thank the Energy Information Administration for making this data publicly available and accessible. I would also like to thank the instructors and staff of Galvanize -- San Francisco's Data Science Immersive Program for their guidance in developing this project.
