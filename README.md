@@ -32,7 +32,7 @@ The functions used to retrieve the data from the SQL database at will can be fou
 The image below uses California's electricity generated from solar energy to demonstrate the train/test split used for comparing the finalized models.
 
 <p align="center">
-<img src="images/CA_solar_train_test.png" width=800 height=500>
+<img src="images/CA_solar_train_test.png" width=600 height=350>
 </p>
 
 One of the final goals of this project is to predict each time-series for the year 2020, based on the data from 2001-2019. This was considered when choosing the train data to be the 2001-2018 data and the test data to be the 2019 data, in order to select the model that perform best under similar conditions. 
@@ -74,7 +74,7 @@ The root-mean-squared error (RMSE) on the predicted test data was used as the ma
 When examining the RMSE for predictions on electricity generated from Wind Energy, the table leads you to believe that the baseline model was the best predictor, because it has the lowest RMSE score. However, visual inspection of the actual predictions, shown below, paints a different picture. 
 
 <p align="center">
-<img src="images/CA_wind.png" >
+<img src="images/CA_wind.png" width=500 height=400>
 </p>
 
 The baseline model has the lowest RMSE score for wind energy, however, it obviously predicts none of the seasonal trend present in the 2019 data. All three of the other models capture some of the seasonal trend, with the Holt-Winters method appearing to do the best job. What is happening is that the RMSE score punishes large errors that occur when the prediction is one or two periods late in predicting the sharp rises and falls of the actual data. This is the reason, that a visual inspection of the predictions was required to confirm the RMSE scores. 
@@ -85,5 +85,60 @@ Using RMSE on the 2019 predictions in combination with visually inspecting predi
 
 ## Analyzing 2020 Predictions
 
+The goal of this project once 2020 forecasts were made, is to identify which states are poised to increase it's percentage of electricity generated from each renewable resource in 2020. The method used for this analysis is described below:
+* Using ordinary least squares regression, fit a linear trend to each predicted 2020 time-series.
+* Find the slope of the linear fit (in units of percentage-points/year)
+* Compare the slopes of the linear fits to identify the states with the greatest slopes to be the predicted leaders for increasing it's percentage of electricity generated from each renewable resource in 2020.
 
+To demonstrate the process, below is the forecasted 2020 time-series for California's electricity generated from solar energy.
+
+<p align="center">
+<img src="images/CA_solar_predict.png" width=600 height=350>
+</p>
+
+## Results
+
+The image below shows the states identified as the leaders for increasing it's percentage of electricity generated from each renewable resource in 2020.
+
+<p align="center">
+<img src="images/Leaders.png">
+</p>
+
+The tables below identifies the top 3 states with respect to increasing it's percentage of electricity generated from each renewable resource in 2020.
+
+| State | Solar Fit Slope  |
+| --- | :---: |
+| Massachsetts | +2.2 %-points/year |
+| California | +2.0 %-points/year |
+| Nevada | +1.2 %-points/year |
+
+| State | Wind Fit Slope  |
+| --- | :---: |
+| Oregon | +1.5 %-points/year |
+| North Dakota | +0.64 %-points/year |
+| South Dakota | +0.44 %-points/year |
+
+| State | Hydroelectric Fit Slope  |
+| --- | :---: |
+| South Dakota | +5.8 %-points/year |
+| Ohio | +0.064 %-points/year |
+| Indiana | +0.057 %-points/year |
+
+| State | Biomass Fit Slope  |
+| --- | :---: |
+| Maine | +0.62 %-points/year |
+| New Hampshire | +0.31 %-points/year |
+| Idaho | +0.28 %-points/year |
+
+| State | Geothermal Fit Slope  |
+| --- | :---: |
+| Indiana | +0.074 %-points/year |
+| Oregon | +0.034 %-points/year |
+
+
+| State | All Renewables Fit Slope  |
+| --- | :---: |
+| South Dakota | +6.2 %-points/year |
+| Massachusetts | +1.2 %-points/year |
+| New Jersey | +0.38 %-points/year |
 
