@@ -1,6 +1,6 @@
 # <div align="center">Predicting States Renewable Energy Production</div>
 #### <div align="center">by Alex Diaz-Clark</div>
-A project that includes training and evaluating various models used to predict the percentage of electricity generated from renewable resources for each state. 
+ 
 
 ## Background
 
