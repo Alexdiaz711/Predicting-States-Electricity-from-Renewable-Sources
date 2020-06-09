@@ -54,7 +54,7 @@ def cloropleth(energy_source):
                 ]
     fig.update_layout(
         sliders=sliders,
-        title_text='Percent of Annual Electricity Generated, {} Energy'
+        title_text='Percent of Total Electricity Generated, {} Energy, Annual'
                     .format(energy_names[energy_source]),
         geo = dict(
             scope='usa',
@@ -74,7 +74,7 @@ def plots(source, state_list):
 
     state_list: list or np.array of state(s) forecasts to include in plot
     '''
-    fig, ax = plt.subplots()
+    fig = go.Figure()
     for i, state in enumerate(state_list):
         mask1 = joined.STATE == state
         mask2 = joined.SOURCE == source
@@ -85,18 +85,29 @@ def plots(source, state_list):
         temp3 = results_df[mask3][mask4]
         m = temp3.SLOPE.iloc[0]
         b = temp3.INTERCEPT.iloc[0]
-        dates = joined.columns[-13:]
-        ax.plot(temp1*100, label=states[state], alpha=0.65)
-        ax.plot(temp2*100, alpha=0.65, color='g')
+        dates1 = joined.columns[2:-12]
+        dates2 = joined.columns[-13:]
+        fig.add_trace(go.Scatter(x=dates1, y=temp1*100, name=states[state], mode='lines'))
+        fig.add_trace(go.Scatter(x=dates2, y=temp2*100, mode='lines',
+                                    line=dict(color='green'), showlegend=False))
         x = np.arange(0,13)
         y = m*x + b
-        ax.plot(dates, y*100, color='r')
-        ax.grid(alpha=0.35)
-        ax.legend(fontsize=12)
-        ax.set_title('State Comparison', fontsize=12)
-        ax.set_xlabel('Time', fontsize=12)
-        ax.set_ylabel('% of State Total Electricity Generated', fontsize=12)
+        fig.add_trace(go.Scatter(x=dates2, y=y*100, mode='lines', 
+                                    line=dict(color='red'), showlegend=False))
+        # ax.grid(alpha=0.35)
+        # ax.legend(fontsize=12)
+        # ax.set_title('State Comparison', fontsize=12)
+        # ax.set_xlabel('Time', fontsize=12)
+        # ax.set_ylabel('% of State Total Electricity Generated', fontsize=12)
+    fig.update_layout(
+        title_text='Percent of Total Electricity Generated, {} Energy, Monthly'
+                    .format(energy_names[source]),
+        plot_bgcolor='rgb(235,235,235)',
+        xaxis_title='Time',
+        yaxis_title='% of Total Electricity Generated'
+    )
     return fig
+
 
 # Importing data from PostgreSQL database
 monthly_df, annual_df = from_SQL()
@@ -191,7 +202,7 @@ app.layout = html.Div([
             dcc.Dropdown(
                         id='states',
                         options=[{'label': v, 'value': k} for k, v in states.items()],
-                        value='CA',
+                        value=['CA'],
                         clearable=True,
                         multi=True)
                 ],
@@ -207,7 +218,7 @@ app.layout = html.Div([
         ),
         dcc.Graph(
             id='time_series',
-            figure=mpl_to_plotly(plots('renewables', ['CA'])),
+            figure=plots('renewables', ['CA']),
             style={'width': '50%', 'float': 'right', 'display': 'inline-block'}
         )
     ])
@@ -224,7 +235,7 @@ def update_cloropleth(value):
               [Input('renewable_source', 'value'),
                Input('states', 'value')])
 def update_time_series(value1, value2):
-    return mpl_to_plotly(plots(value1, value2))
+    return plots(value1, value2)
 
 if __name__ == "__main__":
-    app.run_server(host='127.0.0.1', debug=True, dev_tools_hot_reload=False)
+    app.run_server(host='127.0.0.1', dev_tools_hot_reload=False)
