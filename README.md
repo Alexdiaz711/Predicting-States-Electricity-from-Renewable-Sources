@@ -59,7 +59,7 @@ The next model used is the univariate LSTM neural network, using only the 2001-2
 
 * Multivariate LSTM Neural Network
 
-The final model used is the multivariate neural network. The model structure is the same as the Univariate version, except the input tensor contains the time-series for all 11 energy sources (both renewable and non-renewable) instead of only the time-series for the renewable energy source in question. This is an attempt to capture information that may exist in the relationships between the time-series for the different energy sources. 
+The final model used is the multivariate LSTM neural network. The model structure is the same as the Univariate version, except the input tensor contains the time-series for all 11 energy sources (both renewable and non-renewable) instead of only the time-series for the renewable energy source in question. This is an attempt to capture information that may exist in the relationships between the time-series for the different energy sources. 
 
 ## Evaluation Metric
 
