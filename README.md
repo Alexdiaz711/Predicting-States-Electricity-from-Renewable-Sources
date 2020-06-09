@@ -10,7 +10,8 @@ The goals of this project are as follows:
 * Develop a time-series forecasting model to be used for predicting the percentage of electricity generated from renewable resources for each state based on monthly data from the years 2001-2019.   
 * Use the model to predict the monthly percentage of electricity generated from renewable resources for each state for the year 2020.
 * Analyze the 2020 forecasts to identify which states are poised to increase it's percentage of electricity generated from each renewable resource in 2020.
-* Create an interactive data dashboard so that users can explore historical renewable energy trends as well as my the model's 2020 forecasts.
+* Create an interactive data dashboard where users can explore historical trends and 2020 predictions.
+
 
 ## The Data
 
@@ -174,7 +175,6 @@ My takeaways from this project are as follows:
 There are a few ideas I would like to explore to improve this project:
 * Find possibly-related exogenous features to be used in making predictions.
 * Continue tuning the Neural Network and try to develop a better predicting model. 
-* Create an interactive data dashboard where users can explore historical trends and predictions.
 * Host the data dashboard on a server for users to use from anywhere.
 
 ## Acknowledgments
