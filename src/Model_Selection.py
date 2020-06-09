@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
 
 
-    # Using California's data to evaluate model performace
+    # Using California's data to demonstrate model evaluation
     state = 'CA'
     current = states[state]
     CA_predicts = {}
@@ -185,7 +185,7 @@ if __name__ == "__main__":
     ax.set_ylabel("% of State's Total Electricity", fontsize=14)
     plt.savefig('images/CA_solar_train_test.png')
 
-    # Baseline: Linear Regression
+    # Baseline: Linear Regression for California
     CA_predicts['Baseline'] = {}
     sources = create_sources_dict()
     for source in renewables:
@@ -204,7 +204,7 @@ if __name__ == "__main__":
         RMSE_dict[state].loc['Baseline', source] = round(RMSE(CA_predicts['Baseline'][source].Data,
                                                             CA_predicts['Baseline'][source].Predict), 4)
 
-    # Holt-Winters Triple Exponential Smoothing
+    # Holt-Winters Triple Exponential Smoothing for California
     CA_predicts['Holt-Winters'] = {}
     sources = create_sources_dict()
     for source in renewables:
@@ -219,7 +219,7 @@ if __name__ == "__main__":
                                                                 CA_predicts['Holt-Winters'][source].Predict), 4)
 
 
-    # LSTM Univariate
+    # LSTM Univariate for California
     CA_predicts['LSTM Univariate'] = {}
     sources = create_sources_dict()
     n_previous = 24
@@ -240,7 +240,7 @@ if __name__ == "__main__":
         RMSE_dict[state].loc['LSTM Univariate', source] = round(RMSE(CA_predicts['LSTM Univariate'][source].Data,
                                                                     CA_predicts['LSTM Univariate'][source].Predict), 4)
 
-    # LSTM Multivariate
+    # LSTM Multivariate for California
     CA_predicts['LSTM Multivariate'] = {}
     sources = create_sources_dict()
     n_previous = 24
@@ -283,7 +283,7 @@ if __name__ == "__main__":
                                                                     CA_predicts['LSTM Multivariate'][source].Predict), 4)
 
 
-    # Creating Plots of model predictions compared to the baseline
+    # Creating Plots of California model predictions compared to the baseline
     # for illustrative purposes
     title_dict = {'solar': 'CA Electricity Generated from Solar Energy',
                 'wind': 'CA Electricity Generated from Wind Energy',
@@ -311,3 +311,141 @@ if __name__ == "__main__":
                             'bio': 'Biomass',
                             'geo': 'Geothermal'}, axis=1)
     print(CA_RMSE)
+
+    # Using All states data to perform final model evaluation
+    for state in monthly.STATE.unique():
+        if state != 'US' and state != 'CA':
+            current = states[state]
+
+            RMSE_dict[state] = pd.DataFrame(columns=['solar', 'wind', 'hydro', 'bio', 'geo'],
+                                index=['Baseline', 'Holt-Winters', 'LSTM Univariate', 'LSTM Multivariate'],
+                                data=None,
+                                )
+
+            # Baseline: Linear Regression
+            predicts = {}
+            sources = create_sources_dict()
+            for source in renewables:
+                sources[source]['Time'] = np.arange(228)
+                sources[source]['Constant'] = 1
+                sources[source] = sources[source][['Constant', 'Time', 'Data', 'Year']]
+                train = sources[source].iloc[:-12, :]
+                X_train = train[['Constant', 'Time']].to_numpy()
+                y_train = train['Data'].to_numpy()
+                test = sources[source].iloc[-12:, :]
+                X_test = test[['Constant', 'Time']].to_numpy()
+                y_hat = sm.OLS(y_train, X_train).fit().predict(X_test)
+                predicts[source] = test
+                predicts[source]['Predict'] = y_hat
+                predicts[source] = predicts[source][['Data', 'Predict']]
+                RMSE_dict[state].loc['Baseline', source] = round(RMSE(predicts[source].Data, predicts[source].Predict), 6)
+
+            # Holt-Winters Triple Exponential Smoothing
+            predicts = {}
+            sources = create_sources_dict()
+            for source in renewables:
+                train = sources[source].iloc[:-12, :].Data
+                fit = ExponentialSmoothing(train, seasonal_periods=12, damped=True,  
+                                    trend='add', seasonal='add').fit()
+                y_hat = fit.forecast(12)
+                predicts[source] = sources[source].iloc[-12:, :]
+                predicts[source]['Predict'] = y_hat
+                predicts[source] = predicts[source][['Data', 'Predict']]
+                RMSE_dict[state].loc['Holt-Winters', source] = round(RMSE(predicts[source].Data, predicts[source].Predict), 6)
+
+            # LSTM Univariate
+            predicts = {}
+            sources = create_sources_dict()
+            n_previous = 24
+            n_future = 12
+            n_test = n_previous + n_future
+            for source in renewables:
+                tf.keras.backend.clear_session()
+                train = sources[source].iloc[:-n_test, :].Data
+                test = sources[source].iloc[-n_test:, :].Data
+                x_test = test[:-n_future].to_numpy().reshape(1, n_previous, 1)
+                model = build_model_uni()
+                x_train, y_train = windowize_data(train, n_previous, n_future)
+                model.fit(x_train, y_train, batch_size=32, epochs=100)
+                y_hat = model.predict(x_test)
+                predicts[source] = sources[source].iloc[-n_future:, :]
+                predicts[source]['Predict'] = y_hat[0]
+                predicts[source] = predicts[source][['Data', 'Predict']]
+                RMSE_dict[state].loc['LSTM Univariate', source] = round(RMSE(predicts[source].Data, predicts[source].Predict), 6)
+
+            # LSTM Multivariate
+            predicts = {}
+            sources = create_sources_dict()
+            n_previous = 24
+            n_future = 12
+            n_test = n_previous + n_future
+            x_train = {}
+            y_train = {}
+            x_test = {}
+            all_sources = [s for s in sources.keys()]
+            source_ind = {x: i for i, x in enumerate(all_sources)}
+            for source in all_sources:
+                train = sources[source].iloc[:-n_test, :].Data
+                test = sources[source].iloc[-n_test:, :].Data
+                x_train[source], y_train[source] = windowize_data(train, n_previous, n_future)
+                x_test[source] = test[:-n_future].to_numpy().reshape(1, n_previous, 1)
+            x_train_combined = np.full((157, 24, 11), 1.0)
+            x_test_combined = np.full((1, 24, 11), 1.0)
+            for i in range(157):
+                for j in range(24):
+                    temp = []
+                    for source in all_sources:
+                        temp.append(x_train[source][i][j][0])
+                    x_train_combined[i][j] = np.array(temp)
+            for k in range(24):
+                temp2 = []
+                for source in all_sources:
+                    temp2.append(x_test[source][0][k][0])
+                x_test_combined[0][k] = np.array(temp2)
+            for source in renewables:
+                not_target = list(sources.keys())
+                not_target.remove(source)
+                tf.keras.backend.clear_session()
+                model = build_model_multi()
+                model.fit(x_train_combined, y_train[source], batch_size=32, epochs=100)
+                y_hat = model.predict(x_test_combined)
+                predicts[source] = sources[source].iloc[-n_future:, :]
+                predicts[source]['Predict'] = y_hat[0]
+                predicts[source] = predicts[source][['Data', 'Predict']]
+                RMSE_dict[state].loc['LSTM Multivariate', source] = round(RMSE(predicts[source].Data, predicts[source].Predict), 6)
+    
+    # Creating DF for all states and sources RMSE scores
+    RMSE_combined = RMSE_dict['AK']
+    RMSE_combined = RMSE_combined.rename({'solar': 'solar_AK',
+                                        'wind': 'wind_AK',
+                                        'hydro': 'hydro_AK',
+                                        'bio': 'bio_AK',
+                                        'geo': 'geo_AK'}, axis=1)
+    for state in RMSE_dict.keys():
+        if state != 'AK':
+            for col in RMSE_dict[state].columns:
+                RMSE_combined[col + '_' + state] = RMSE_dict[state][col]
+    
+    # Normalizing RMSE score for each model's prediciton to Baseline RMSE for that state & source
+    for col in RMSE_combined:
+        if RMSE_combined.loc['Baseline', col] == 0:
+            RMSE_combined = RMSE_combined.drop(col, axis=1)
+        else:
+            RMSE_combined[col] = RMSE_combined[col].apply(lambda x: x/RMSE_combined.loc['Baseline', col])
+    
+    # Removing cases where actual data points < 0.001 (creates very large RMSE when 
+    # prediciton is not really necessary)
+    drop_these = []
+    for ind in monthly[monthly.iloc[:,-1]<0.002].index:
+        d1 = monthly.loc[ind].STATE
+        d2 = monthly.loc[ind].SOURCE
+        if d2 in renewables:
+            drop_these.append((d1, d2))
+    outl_rem = RMSE_combined.copy()
+    for pair in drop_these:
+        name = pair[1] + '_' + pair[0]
+        if name in outl_rem.columns:
+            outl_rem = outl_rem.drop(name, axis=1)
+
+    # Printing final Normalized RMSE scores
+    print(outl_rem.mean(axis=1))

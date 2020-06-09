@@ -44,7 +44,7 @@ if __name__ == "__main__":
     results_df['Change for 2020'] = results_df.SLOPE * 12
     for source in renewables:
         temp = results_df[results_df.SOURCE == source]
-        temp2 = temp[['STATE', 'Change for 2020']].sort_values('Change for 2020', ascending=False).head(3)
+        temp2 = temp[['STATE', 'Change for 2020']].sort_values('Change for 2020', ascending=False)
         states = temp2.STATE
         changes = temp2['Change for 2020']
         print('Largest slope for {} prediction linear fit:'.format(source))
