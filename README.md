@@ -83,7 +83,7 @@ The baseline model has the lowest RMSE score for wind energy, however, it obviou
 
 In any case, the model with the lowest average normalized RMSE was the model that was able to predict those sharp seasonal spikes on-time most often. Below is a table showing the average normalized RMSE for each model over all the states and energy source predictions.
 
-| Model | **Normalized Avg** |
+| Model | **Average of All Normalized RMSEs** |
 | --- | :---: |
 | Baseline | **1.0** |
 | Holt-Winters | **0.88** |
