@@ -123,18 +123,40 @@ The image below shows the states identified as the leaders for increasing it's p
 The tables below identifies the top 3 states with respect to increasing it's percentage of electricity generated from each renewable resource in 2020.
 
 
-| State | Solar Fit Slope  | State | Wind Fit Slope  | State | Hydroelectric Fit Slope  |
-| --- | :---: | --- | :---: | --- | :---: |
-| Massachusetts | +2.2 %-points/year | Oregon | +1.5 %-points/year | South Dakota | +5.8 %-points/year |
-| California | +2.0 %-points/year | North Dakota | +0.64 %-points/year | Ohio | +0.064 %-points/year |
-| Nevada | +1.2 %-points/year | South Dakota | +0.44 %-points/year | Indiana | +0.057 %-points/year |
+| State | Solar Fit Slope  |
+| --- | :---: |
+| Massachusetts | +2.2 %-points/year |
+| California | +2.0 %-points/year |
+| Nevada | +1.2 %-points/year |
 
-| State | Biomass Fit Slope  | State | Geothermal Fit Slope  | State | All Renewables Fit Slope  |
-| --- | :---: | --- | :---: | --- | :---: |
-| Maine | +0.62 %-points/year | Indiana | +0.074 %-points/year | South Dakota | +6.2 %-points/year |
-| New Hampshire | +0.31 %-points/year | Oregon | +0.034 %-points/year | Massachusetts | +1.2 %-points/year |
-| Idaho | +0.28 %-points/year |   |   | New Jersey | +0.38 %-points/year |
+| State | Wind Fit Slope  |
+| --- | :---: |
+| Oregon | +1.5 %-points/year |
+| North Dakota | +0.64 %-points/year |
+| South Dakota | +0.44 %-points/year |
 
+| State | Hydroelectric Fit Slope  |
+| --- | :---: |
+| South Dakota | +5.8 %-points/year |
+| Ohio | +0.064 %-points/year |
+| Indiana | +0.057 %-points/year |
+
+| State | Biomass Fit Slope  |
+| --- | :---: |
+| Maine | +0.62 %-points/year |
+| New Hampshire | +0.31 %-points/year |
+| Idaho | +0.28 %-points/year |
+
+| State | Geothermal Fit Slope  |
+| --- | :---: |
+| Indiana | +0.074 %-points/year |
+| Oregon | +0.034 %-points/year |
+| Only 2 positive states |  -- |
+
+| State | All Renewables Fit Slope  |
+| South Dakota | +6.2 %-points/year |
+| Massachusetts | +1.2 %-points/year |
+| New Jersey | +0.38 %-points/year |
 
 ## Conclusions
 
