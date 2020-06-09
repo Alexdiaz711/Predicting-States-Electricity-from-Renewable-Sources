@@ -154,6 +154,7 @@ The tables below identifies the top 3 states with respect to increasing it's per
 | Only 2 positive states |  -- |
 
 | State | All Renewables Fit Slope  |
+| --- | :---: |
 | South Dakota | +6.2 %-points/year |
 | Massachusetts | +1.2 %-points/year |
 | New Jersey | +0.38 %-points/year |
