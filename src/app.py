@@ -13,6 +13,13 @@ import warnings
 warnings.filterwarnings("ignore")
 
 def cloropleth(energy_source):
+    '''
+    Function to create cloropleth map for data dashboard
+
+    Inputs:
+    -------
+    energy_source: string denoting which renewable energy source to disply on map
+    '''
     fig = go.Figure()
     for date in annual[energy_source].columns:
         fig.add_trace(
@@ -22,7 +29,7 @@ def cloropleth(energy_source):
                 locationmode='USA-states',
                 colorscale='Greens',
                 autocolorscale=False,
-                marker_line_color='grey', # line markers between states
+                marker_line_color='grey',
                 colorbar_title="%",
                 colorbar_x=0,
                 colorbar_thickness=15,
@@ -37,7 +44,7 @@ def cloropleth(energy_source):
             args=[{"visible": [False] * len(annual[energy_source].columns)}],
             label='{}'.format(i + 2001)
         )
-        step["args"][0]["visible"][i] = True  # Toggle i'th trace to "visible"
+        step["args"][0]["visible"][i] = True 
         steps.append(step)  
     sliders = [dict(
         active=18,
@@ -58,6 +65,15 @@ def cloropleth(energy_source):
     return fig
 
 def plots(source, state_list):
+    '''
+    Function to create plot for data dashboard
+
+    Inputs:
+    -------
+    source: string denoting which renewable energy source to disply on plot
+
+    state_list: list or np.array of state(s) forecasts to include in plot
+    '''
     fig, ax = plt.subplots()
     for i, state in enumerate(state_list):
         mask1 = joined.STATE == state
@@ -82,6 +98,7 @@ def plots(source, state_list):
         ax.set_ylabel('% of State Total Electricity Generated', fontsize=12)
     return fig
 
+# Importing data from PostgreSQL database
 monthly_df, annual_df = from_SQL()
 predict_df = from_SQL_predict()
 renewables = ['solar', 'wind', 'hydro', 'bio', 'geo', 'renewables']
@@ -91,13 +108,17 @@ monthly_renew.reset_index(drop=True, inplace=True)
 joined = monthly_renew.merge(predict_df)
 results_df = joined[['STATE', 'SOURCE']]
 
+# Creating a dictionary containing dataframes with monthly data for each energy source
+# to be used in plot
 monthly = {}
 for source in renewables:
     monthly[source] = (joined[joined.SOURCE==source].set_index('STATE')
                                                     .drop('SOURCE', axis=1)
                                                     .astype(float)
                         )
-                        
+
+# Creating a dictionary containing dataframes with annual data for each energy source
+# to be used in map                       
 annual = {}
 for source in renewables:
     annual[source] = (annual_df[annual_df.SOURCE==source].set_index('STATE')
@@ -105,6 +126,7 @@ for source in renewables:
                                                             .astype(float)
                         )
 
+# Dictionary of proper state names
 states = {'AK': 'Alaska', 'AL': 'Alabama', 'AR': 'Arkansas', 'CA': 'California',
         'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 
         'GA': 'Georgia', 'HI': 'Hawaii', 'IA': 'Iowa', 'ID': 'Idaho', 'IL': 'Illinois', 
@@ -119,6 +141,7 @@ states = {'AK': 'Alaska', 'AL': 'Alabama', 'AR': 'Arkansas', 'CA': 'California',
         'WV': 'West Virginia', 'WY': 'Wyoming', 'AZ': 'Arizona'
         }
 
+# Dictionary of proper renewable energy source names
 energy_names = {'solar': 'Solar',
                 'wind': 'Wind',
                 'hydro': 'Hydroelectric',
@@ -127,6 +150,7 @@ energy_names = {'solar': 'Solar',
                 'renewables': 'All Renewable'}
 energy_abr = {v: k for k, v in energy_names.items()}
 
+# Fitting linear trends to the 2020 forcasts to be used in plots
 fit_slopes = []
 fit_intercepts = []
 for i in range(joined.shape[0]):
@@ -141,8 +165,8 @@ for i in range(joined.shape[0]):
 results_df['SLOPE'] = fit_slopes
 results_df['INTERCEPT'] = fit_intercepts
 
+# Creating application to run data dashboard
 app = dash.Dash(__name__)
-
 app.layout = html.Div([
     html.Div([
         html.H1("States Renewable Energy Data Dashboard",
@@ -189,11 +213,13 @@ app.layout = html.Div([
     ])
 ])
 
+# Callback for energy source drop-down menu
 @app.callback(Output('cloropleth', 'figure'),
               [Input('renewable_source', 'value')])
 def update_cloropleth(value):
     return cloropleth(value)
 
+# Callback for state drop-down menu
 @app.callback(Output('time_series', 'figure'),
               [Input('renewable_source', 'value'),
                Input('states', 'value')])
