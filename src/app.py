@@ -221,6 +221,13 @@ app.layout = html.Div([
             figure=plots('renewables', ['CA']),
             style={'width': '50%', 'float': 'right', 'display': 'inline-block'}
         )
+    ]),
+
+    html.Div([
+        html.H6("* 2001-2019 data from Energy Information Administration. 2020 data is forecasted",
+            style={
+                'textAlign': 'left'
+            })
     ])
 ])
 
