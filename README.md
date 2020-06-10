@@ -1,6 +1,7 @@
 # <div align="center">Predicting States Renewable Energy Production</div>
 #### <div align="center">by Alex Diaz-Clark</div>
- 
+
+[Launch Interactive Data Dashboard](https://states-renew-dashboard.herokuapp.com/ "Data Dashboard")
 
 ## Background
 
