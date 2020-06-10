@@ -169,14 +169,16 @@ My takeaways from this project are as follows:
 * Only 6 states' forecasted 2020 time-series for electricity generated from all renewable energy sources have a positive-sloping linear fit. It's possible that 2020 will bring a downturn in overall electricity generated from renewable sources.
 * Only 2 states' forecasted 2020 time-series for electricity generated from geothermal energy sources have a positive-sloping linear fit, and 46 states do not produce electricity using geothermal energy, making it the energy source most likely to see a decrease in 2020. 
 * 27 states' forecasted 2020 time-series for electricity generated from biomass energy sources have a positive-sloping linear fit, making it the energy source most likely to see an increase in 2020. 
-* Included in the 'src/' folder is a script to launch an interactive data dashboard. Currently, the data dashboard is only built to run on your local machine. Run the script, launch it, and explore the trends in historical data as well as my model forecasts.
+
+[Launch Interactive Data Dashboard](https://states-renew-dashboard.herokuapp.com/ "Data Dashboard")
 
 ## Next Steps
 
 There are a few ideas I would like to explore to improve this project:
 * Find possibly-related exogenous features to be used in making predictions.
-* Continue tuning the Neural Network and try to develop a better predicting model. 
-* Host the data dashboard on a server for users to use from anywhere.
+* Continue tuning the Neural Network and try to develop a better predicting model.
+* Evaluate ARIMA model as a potential predictor.
+
 
 ## Acknowledgments
 
